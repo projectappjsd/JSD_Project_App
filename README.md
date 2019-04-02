@@ -1,2 +1,4 @@
-"# JSD_Project_App" 
-"# JSD_Project_App" 
+## 서울시 앱 공모전을 위한 무더위 쉼터 앱 개발
+
+# JSD 동아리 뉴미디어쇼 위한 앱 
+
