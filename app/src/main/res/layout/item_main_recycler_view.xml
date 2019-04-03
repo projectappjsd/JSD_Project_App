@@ -14,7 +14,7 @@
         android:src="@mipmap/ic_launcher" />
 
     <LinearLayout
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:orientation="vertical"
@@ -49,8 +49,8 @@
 
     <ImageView
         android:id="@+id/item_main_next_image"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
         android:layout_gravity="bottom"
         android:layout_margin="5dp"
         android:src="@drawable/next_icon" />

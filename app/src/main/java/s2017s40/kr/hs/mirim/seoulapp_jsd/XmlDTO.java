@@ -1,19 +1,25 @@
 package s2017s40.kr.hs.mirim.seoulapp_jsd;
 
 public class XmlDTO {
-    String shltrNm;
-    String legaldongNm;
-    String shltrType;
-    int fanHoldCo;
-    int arcndtnHoldCo;
-    String nightExtnYn;
-    String wkendUseYn;
-    String rdnmadr;
-    String lnmadr;
-    String phoneNumber;
-    String latitude;
-    String hardness;
-
+    String shltrNm;//쉼터명
+    String legaldongNm;//법정동명
+    String shltrType;//쉼터유형
+    int fanHoldCo;//선풍기보유대수
+    int arcndtnHoldCo;//에어컨보유대수
+    String nightExtnYn;//야간연장운영여부
+    String wkendUseYn;//주말운영여부
+    String rdnmadr;//소재지도로명주소
+    String lnmadr;//소재지지번주소
+    String phoneNumber;//관리기관전화번호
+    String latitude;//위도
+    String hardness;//경도
+    XmlDTO(){}
+    XmlDTO(String shltrNm, String rdnmadr, String latitude, String hardness){//Main RecyclerView를 위한 생성자
+        this.shltrNm = shltrNm;
+        this.rdnmadr = rdnmadr;
+        this.latitude = latitude;
+        this.hardness = hardness;
+    }
     public void setArcndtnHoldCo(int arcndtnHoldCo) {
         this.arcndtnHoldCo = arcndtnHoldCo;
     }

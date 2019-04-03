@@ -10,20 +10,39 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal"
+        android:background="@color/colorPrimary"
         android:layout_weight="10">
-        <Spinner
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1">
-        </Spinner>
+            android:layout_weight="1"
+            android:text="거리순"
+            android:gravity="center|left"
+            android:textSize="30sp"/>
         <ImageView
+            android:id="@+id/main_search_image"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:src="@drawable/filter_icon"
             android:layout_weight="6"/>
     </LinearLayout>
-    <android.support.v7.widget.RecyclerView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1">
-    </android.support.v7.widget.RecyclerView>
+        <android.support.v4.widget.SwipeRefreshLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/swipeContainer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/main_list_recycler"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true" />
+
+        </android.support.v4.widget.SwipeRefreshLayout>
+    </LinearLayout>
 </LinearLayout>
