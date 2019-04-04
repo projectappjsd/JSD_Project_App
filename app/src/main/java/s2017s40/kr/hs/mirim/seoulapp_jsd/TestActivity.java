@@ -55,13 +55,17 @@ public class TestActivity extends AppCompatActivity {
             parser.setInput(url.openStream(), null);
 
             int parserEvent = parser.getEventType();
-            System.out.println("파싱시작합니다.");
+
             while (parserEvent != XmlPullParser.END_DOCUMENT){
                 switch(parserEvent){
                     case XmlPullParser.START_TAG://parser가 시작 태그를 만나면 실행
                         if(parser.getName().equals("shltrNm")){ //title 만나면 내용을 받을수 있게 하자
                             inAddr = true;
-                        } break;
+                        }else if(parser.getName().equals("shltrNm")){
+                            inAddr = true;
+                        }
+
+                        break;
 
                     case XmlPullParser.TEXT://parser가 내용에 접근했을때
                         if(inAddr){ //isTitle이 true일 때 태그의 내용을 저장.
