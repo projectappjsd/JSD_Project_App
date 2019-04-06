@@ -16,14 +16,15 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
-        public TextView mShltrNm, mRdnmadr;
+        public TextView mShltrNm, mRdnmadr, mDistan;
         public ImageView mImageView;
 
         public ViewHolder(View view) {
             super(view);
             mView = view;
             mShltrNm = (TextView)view.findViewById(R.id.item_main_title_text);
-            mRdnmadr = (TextView)view.findViewById(R.id.item_main_addr_text) ;
+            mRdnmadr = (TextView)view.findViewById(R.id.item_main_addr_text);
+            mDistan = (TextView)view.findViewById(R.id.item_main_dist_text);
             mImageView = view.findViewById(R.id.item_main_image);
         }
     }
@@ -41,6 +42,7 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
     public void onBindViewHolder(ViewHolder holder, final int position) {
         holder.mShltrNm.setText(mDataset.get(position).getShltrNm());
         holder.mRdnmadr.setText(mDataset.get(position).getRdnmadr());
+        holder.mDistan.setText(mDataset.get(position).getLatitude());
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

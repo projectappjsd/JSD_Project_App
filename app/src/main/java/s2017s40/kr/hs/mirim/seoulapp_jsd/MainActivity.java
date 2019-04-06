@@ -24,9 +24,7 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
     private SwipeRefreshLayout swipeContainer;
-
     private ImageView FindImage;
-
     private RecyclerView mRecyclerView;
     RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
@@ -48,8 +46,27 @@ public class MainActivity extends AppCompatActivity {
         }
         StrictMode.enableDefaults();
 
-        boolean inAddr = false, initem = false;
-        String addr = null;
+          /*  String shltrNm;//쉼터명
+        String legaldongNm;//법정동명
+        String shltrType;//쉼터유형
+        int fanHoldCo;//선풍기보유대수
+        int arcndtnHoldCo;//에어컨보유대수
+        String nightExtnYn;//야간연장운영여부
+        String wkendUseYn;//주말운영여부
+        String rdnmadr;//소재지도로명주소
+        String lnmadr;//소재지지번주소
+        String phoneNumber;//관리기관전화번호
+        String latitude;//위도
+        String hardness;//경도*/
+
+        boolean inShltrNm = false, inRdnmadr = false, inLatitude = false, inHardness = false, initem = false;
+        String shltrNm = null, rdnmadr = null, latitude = null, hardness = null;
+
+        mRecyclerView = (RecyclerView) findViewById(R.id.main_list_recycler);
+        mRecyclerView.setHasFixedSize(true);
+        mLayoutManager = new LinearLayoutManager(this);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        myDataList = new ArrayList<>();
 
         try{
             URL url = new URL("http://api.data.go.kr/openapi/heat-wve-shltr-std?"
@@ -63,44 +80,62 @@ public class MainActivity extends AppCompatActivity {
             parser.setInput(url.openStream(), null);
 
             int parserEvent = parser.getEventType();
-            System.out.println("파싱시작합니다.");
+;
+            Log.e("파싱 시작","파싱 시작합니다.");
             while (parserEvent != XmlPullParser.END_DOCUMENT){
                 switch(parserEvent){
                     case XmlPullParser.START_TAG://parser가 시작 태그를 만나면 실행
                         if(parser.getName().equals("shltrNm")){ //title 만나면 내용을 받을수 있게 하자
-                            inAddr = true;
-                        } break;
+                            Log.e("에러","shltrNm");
+                            inShltrNm = true;
+                        }
+                        if(parser.getName().equals("rdnmadr")){
+                            Log.e("에러","rdnmadr");
+                            inRdnmadr = true;
+                        }
+                        if(parser.getName().equals("latitude")){
+                            inLatitude = true;
+                        }
+                        if(parser.getName().equals("hardness")){
+                            inHardness = true;
+                        }
+                        if(parser.getName().equals("message")){ //message 태그를 만나면 에러 출력
+                        Log.e("에러","에러Message");
+                        //여기에 에러코드에 따라 다른 메세지를 출력하도록 할 수 있다.
+                        }
+                        break;
 
                     case XmlPullParser.TEXT://parser가 내용에 접근했을때
-                        if(inAddr){ //isTitle이 true일 때 태그의 내용을 저장.
-                            addr = parser.getText();
-                            inAddr = false;
-                        }   break;
+                        if(inShltrNm){ //isTitle이 true일 때 태그의 내용을 저장.
+                            shltrNm = parser.getText();
+                            inShltrNm = false;
+                        }
+                        if(inRdnmadr){ //isTitle이 true일 때 태그의 내용을 저장.
+                            rdnmadr = parser.getText();
+                            inRdnmadr = false;
+                        }
+                        if(inLatitude){ //isTitle이 true일 때 태그의 내용을 저장.
+                            latitude = parser.getText();
+                            inLatitude = false;
+                        }
+                        if(inHardness){ //isTitle이 true일 때 태그의 내용을 저장.
+                            hardness = parser.getText();
+                            inHardness = false;
+                        }
+                        break;
                     case XmlPullParser.END_TAG:
                         if(parser.getName().equals("item")){
-                            //status1.setText(status1.getText()+"주소 : "+ addr +"\n");
+                            myDataList.add(new XmlDTO(shltrNm,rdnmadr,latitude,hardness));
                             initem = false;
                         }
                         break;
                 }
-                parserEvent = parser.next();
+                parserEvent = parser.nextTag();
             }
         } catch(Exception e){
-            //status1.setText("에러가..났습니다...");
+            Log.e("파싱 에러","파싱 에러.");
             Log.e("error",String.valueOf(e));
         }
-
-
-        mRecyclerView = (RecyclerView) findViewById(R.id.main_list_recycler);
-        mRecyclerView.setHasFixedSize(true);
-        mLayoutManager = new LinearLayoutManager(this);
-        mRecyclerView.setLayoutManager(mLayoutManager);
-        myDataList = new ArrayList<>();
-
-        myDataList.add(new XmlDTO("안녕","오늘은","누구누구의","생일이야"));
-        myDataList.add(new XmlDTO("안녕","오늘은","누구누구의","생일이야"));
-        myDataList.add(new XmlDTO("안녕","오늘은","누구누구의","생일이야"));
-        myDataList.add(new XmlDTO("안녕","오늘은","누구누구의","생일이야"));
 
         mAdapter = new MainAdapter(myDataList, new MainAdapter.ClickCallback() {
             @Override
