@@ -48,48 +48,8 @@ public class MainActivity extends AppCompatActivity {
         }
         StrictMode.enableDefaults();
 
-        boolean inAddr = false, initem = false;
-        String addr = null;
-
-        try{
-            URL url = new URL("http://api.data.go.kr/openapi/heat-wve-shltr-std?"
-                    + "&pageNo=1&numOfRows=10&ServiceKey="
-                    + key
-            ); //검색 URL부분
-
-            XmlPullParserFactory parserCreator = XmlPullParserFactory.newInstance();
-            XmlPullParser parser = parserCreator.newPullParser();
-
-            parser.setInput(url.openStream(), null);
-
-            int parserEvent = parser.getEventType();
-            System.out.println("파싱시작합니다.");
-            while (parserEvent != XmlPullParser.END_DOCUMENT){
-                switch(parserEvent){
-                    case XmlPullParser.START_TAG://parser가 시작 태그를 만나면 실행
-                        if(parser.getName().equals("shltrNm")){ //title 만나면 내용을 받을수 있게 하자
-                            inAddr = true;
-                        } break;
-
-                    case XmlPullParser.TEXT://parser가 내용에 접근했을때
-                        if(inAddr){ //isTitle이 true일 때 태그의 내용을 저장.
-                            addr = parser.getText();
-                            inAddr = false;
-                        }   break;
-                    case XmlPullParser.END_TAG:
-                        if(parser.getName().equals("item")){
-                            //status1.setText(status1.getText()+"주소 : "+ addr +"\n");
-                            initem = false;
-                        }
-                        break;
-                }
-                parserEvent = parser.next();
-            }
-        } catch(Exception e){
-            //status1.setText("에러가..났습니다...");
-            Log.e("error",String.valueOf(e));
-        }
-
+        boolean inShltrNm = false, inLegaldongNm = false, inLatitude = false, inHardness = false,inRdnmadr = false, initem = false;
+        String shltrNm = null, legaldongNm = null, latitude = null ,hardness = null, rdnmadr = null;
 
         mRecyclerView = (RecyclerView) findViewById(R.id.main_list_recycler);
         mRecyclerView.setHasFixedSize(true);
@@ -97,11 +57,73 @@ public class MainActivity extends AppCompatActivity {
         mRecyclerView.setLayoutManager(mLayoutManager);
         myDataList = new ArrayList<>();
 
-        myDataList.add(new XmlDTO("안녕","오늘은","누구누구의","생일이야"));
-        myDataList.add(new XmlDTO("안녕","오늘은","누구누구의","생일이야"));
-        myDataList.add(new XmlDTO("안녕","오늘은","누구누구의","생일이야"));
-        myDataList.add(new XmlDTO("안녕","오늘은","누구누구의","생일이야"));
+        try{
+            URL url = new URL("http://api.data.go.kr/openapi/heat-wve-shltr-std?&pageNo=1&numOfRows=10&ServiceKey=" + key); //검색 URL부분
 
+            XmlPullParserFactory parserCreator = XmlPullParserFactory.newInstance();
+            XmlPullParser parser = parserCreator.newPullParser();
+
+            parser.setInput(url.openStream(), null);
+
+            int parserEvent = parser.getEventType();
+
+            while (parserEvent != XmlPullParser.END_DOCUMENT){
+                switch(parserEvent){
+                    case XmlPullParser.START_TAG://parser가 시작 태그를 만나면 실행
+                        if(parser.getName().equals("shltrNm")){ //title 만나면 내용을 받을수 있게 하자
+                            inShltrNm = true;
+                        }
+                        if(parser.getName().equals("legaldongNm")){
+                            inLegaldongNm = true;
+                        }
+                        if(parser.getName().equals("latitude")){
+                            inLatitude = true;
+                        }
+                        if(parser.getName().equals("hardness")){
+                            inHardness = true;
+                        }
+                        if(parser.getName().equals("rdnmadr")){
+                            inRdnmadr = true;
+                        }
+                        break;
+                    case XmlPullParser.TEXT://parser가 내용에 접근했을때
+                        if(inShltrNm){ //isTitle이 true일 때 태그의 내용을 저장.
+                            shltrNm = parser.getText();
+                            inShltrNm = false;
+                        }
+                        if(inLegaldongNm){
+                            legaldongNm = parser.getText();
+                            inLegaldongNm = false;
+                        }
+                        if(inLatitude){
+                            latitude = parser.getText();
+                            inLatitude = false;
+                        }
+                        if(inHardness){
+                            hardness = parser.getText();
+                            inHardness = false;
+                        }
+                        if(inRdnmadr){
+                            rdnmadr = parser.getText();
+                            inRdnmadr = false;
+                        }
+                        break;
+                    case XmlPullParser.END_TAG:
+                        if(parser.getName().equals("item")){
+                             if(CheckLocal(legaldongNm)) {
+                                myDataList.add(new XmlDTO(shltrNm, rdnmadr, latitude, hardness));
+                            }
+                            initem = false;
+                        }
+                        break;
+                }
+                parserEvent = parser.next();
+
+            }
+        } catch(Exception e){
+            //status1.setText("에러가..났습니다...");
+            Log.e("error",String.valueOf(e));
+        }
         mAdapter = new MainAdapter(myDataList, new MainAdapter.ClickCallback() {
             @Override
             public void onItemClick(int position) {
@@ -129,5 +151,12 @@ public class MainActivity extends AppCompatActivity {
     }
     public void fetchTimelineAsync(int page) {
         swipeContainer.setRefreshing(false);
+    }
+    public boolean CheckLocal(String str){
+        String arr[] = str.split(" ");
+        if(arr[0].equals("서울특별시")){
+            return true;
+        }
+        return false;
     }
 }
