@@ -24,9 +24,7 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
     private SwipeRefreshLayout swipeContainer;
-
     private ImageView FindImage;
-
     private RecyclerView mRecyclerView;
     RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
@@ -66,7 +64,6 @@ public class MainActivity extends AppCompatActivity {
             parser.setInput(url.openStream(), null);
 
             int parserEvent = parser.getEventType();
-
             while (parserEvent != XmlPullParser.END_DOCUMENT){
                 switch(parserEvent){
                     case XmlPullParser.START_TAG://parser가 시작 태그를 만나면 실행
@@ -118,12 +115,12 @@ public class MainActivity extends AppCompatActivity {
                         break;
                 }
                 parserEvent = parser.next();
-
             }
         } catch(Exception e){
-            //status1.setText("에러가..났습니다...");
+            Log.e("파싱 에러","파싱 에러.");
             Log.e("error",String.valueOf(e));
         }
+
         mAdapter = new MainAdapter(myDataList, new MainAdapter.ClickCallback() {
             @Override
             public void onItemClick(int position) {
