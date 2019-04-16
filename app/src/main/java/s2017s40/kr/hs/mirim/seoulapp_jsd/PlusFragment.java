@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 public class PlusFragment extends Fragment implements View.OnClickListener{
     View view;
-    ImageView Air, Fan, Toilet;
+    ImageView Air, Fan, Toilet, Night, Weeken;
     TextView Cancel, Ok;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -18,6 +18,10 @@ public class PlusFragment extends Fragment implements View.OnClickListener{
         Air = view.findViewById(R.id.plus_Air_image);
         Fan = view.findViewById(R.id.plus_Fan_image);
         Toilet = view.findViewById(R.id.plus_Toilet_image);
+        Night = view.findViewById(R.id.plus_Night_image);
+        Weeken = view.findViewById(R.id.plus_Weeken_image);
+
+
         return view;
     }
     @Override
@@ -31,6 +35,12 @@ public class PlusFragment extends Fragment implements View.OnClickListener{
                 break;
             case R.id.plus_Toilet_image :
                 Air.setImageResource(R.drawable.toilet_on);
+                break;
+            case R.id.plus_Night_image :
+                Air.setImageResource(R.drawable.night_on);
+                break;
+            case R.id.plus_Weeken_image :
+                Air.setImageResource(R.drawable.weeken_on);
                 break;
         }
     }
