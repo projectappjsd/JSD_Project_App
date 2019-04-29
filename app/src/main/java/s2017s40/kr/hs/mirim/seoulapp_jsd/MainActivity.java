@@ -90,7 +90,6 @@ public class MainActivity extends AppCompatActivity {
                             inShltrNm = true;
                         }
                         if(parser.getName().equals("rdnmadr")){
-                            Log.e("에러","rdnmadr");
                             inRdnmadr = true;
                         }
                         if(parser.getName().equals("latitude")){
