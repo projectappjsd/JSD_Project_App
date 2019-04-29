@@ -31,7 +31,7 @@ public class TestActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test);
 
-    if (ContextCompat.checkSelfPermission(this, Manifest.permission.INTERNET) == PackageManager.PERMISSION_GRANTED){
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.INTERNET) == PackageManager.PERMISSION_GRANTED){
         } else{
             //사용자에게 접근권한 설정을 요구하는 다이얼로그를 띄운다.
             ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.INTERNET},0);
