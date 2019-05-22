@@ -1,6 +1,8 @@
 package s2017s40.kr.hs.mirim.seoulapp_jsd;
 
 import android.Manifest;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.StrictMode;
@@ -13,6 +15,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 
 import org.json.JSONArray;
@@ -39,6 +42,13 @@ public class MainActivity extends AppCompatActivity {
 
         FindImage = findViewById(R.id.main_search_image);
 
+        FindImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.INTERNET) == PackageManager.PERMISSION_GRANTED){
         } else{
             //사용자에게 접근권한 설정을 요구하는 다이얼로그를 띄운다.
@@ -46,21 +56,8 @@ public class MainActivity extends AppCompatActivity {
         }
         StrictMode.enableDefaults();
 
-          /*  String shltrNm;//쉼터명
-        String legaldongNm;//법정동명
-        String shltrType;//쉼터유형
-        int fanHoldCo;//선풍기보유대수
-        int arcndtnHoldCo;//에어컨보유대수
-        String nightExtnYn;//야간연장운영여부
-        String wkendUseYn;//주말운영여부
-        String rdnmadr;//소재지도로명주소
-        String lnmadr;//소재지지번주소
-        String phoneNumber;//관리기관전화번호
-        String latitude;//위도
-        String hardness;//경도*/
-
-        boolean inShltrNm = false, inRdnmadr = false, inLatitude = false, inHardness = false, initem = false;
-        String shltrNm = null, rdnmadr = null, latitude = null, hardness = null;
+        boolean inShltrNm = false, inLegaldongNm = false, inLatitude = false, inHardness = false,inRdnmadr = false, initem = false;
+        String shltrNm = null, legaldongNm = null, latitude = null ,hardness = null, rdnmadr = null;
 
         mRecyclerView = (RecyclerView) findViewById(R.id.main_list_recycler);
         mRecyclerView.setHasFixedSize(true);
@@ -69,10 +66,7 @@ public class MainActivity extends AppCompatActivity {
         myDataList = new ArrayList<>();
 
         try{
-            URL url = new URL("http://api.data.go.kr/openapi/heat-wve-shltr-std?"
-                    + "&pageNo=1&numOfRows=10&ServiceKey="
-                    + key
-            ); //검색 URL부분
+            URL url = new URL("http://api.data.go.kr/openapi/heat-wve-shltr-std?&pageNo=1&numOfRows=10&ServiceKey=" + key); //검색 URL부분
 
             XmlPullParserFactory parserCreator = XmlPullParserFactory.newInstance();
             XmlPullParser parser = parserCreator.newPullParser();
@@ -80,17 +74,17 @@ public class MainActivity extends AppCompatActivity {
             parser.setInput(url.openStream(), null);
 
             int parserEvent = parser.getEventType();
-;
-            Log.e("파싱 시작","파싱 시작합니다.");
             while (parserEvent != XmlPullParser.END_DOCUMENT){
                 switch(parserEvent){
                     case XmlPullParser.START_TAG://parser가 시작 태그를 만나면 실행
                         if(parser.getName().equals("shltrNm")){ //title 만나면 내용을 받을수 있게 하자
-                            Log.e("에러","shltrNm");
                             inShltrNm = true;
                         }
                         if(parser.getName().equals("rdnmadr")){
                             inRdnmadr = true;
+                        }
+                        if(parser.getName().equals("legaldongNm")){
+                            inLegaldongNm = true;
                         }
                         if(parser.getName().equals("latitude")){
                             inLatitude = true;
@@ -98,38 +92,42 @@ public class MainActivity extends AppCompatActivity {
                         if(parser.getName().equals("hardness")){
                             inHardness = true;
                         }
-                        if(parser.getName().equals("message")){ //message 태그를 만나면 에러 출력
-                        Log.e("에러","에러Message");
-                        //여기에 에러코드에 따라 다른 메세지를 출력하도록 할 수 있다.
+                        if(parser.getName().equals("rdnmadr")){
+                            inRdnmadr = true;
                         }
                         break;
-
                     case XmlPullParser.TEXT://parser가 내용에 접근했을때
                         if(inShltrNm){ //isTitle이 true일 때 태그의 내용을 저장.
                             shltrNm = parser.getText();
                             inShltrNm = false;
                         }
-                        if(inRdnmadr){ //isTitle이 true일 때 태그의 내용을 저장.
-                            rdnmadr = parser.getText();
-                            inRdnmadr = false;
+                        if(inLegaldongNm){
+                            legaldongNm = parser.getText();
+                            inLegaldongNm = false;
                         }
-                        if(inLatitude){ //isTitle이 true일 때 태그의 내용을 저장.
+                        if(inLatitude){
                             latitude = parser.getText();
                             inLatitude = false;
                         }
-                        if(inHardness){ //isTitle이 true일 때 태그의 내용을 저장.
+                        if(inHardness){
                             hardness = parser.getText();
                             inHardness = false;
+                        }
+                        if(inRdnmadr){
+                            rdnmadr = parser.getText();
+                            inRdnmadr = false;
                         }
                         break;
                     case XmlPullParser.END_TAG:
                         if(parser.getName().equals("item")){
-                            myDataList.add(new XmlDTO(shltrNm,rdnmadr,latitude,hardness));
+                             if(CheckLocal(legaldongNm)) {
+                                myDataList.add(new XmlDTO(shltrNm, rdnmadr, latitude, hardness));
+                            }
                             initem = false;
                         }
                         break;
                 }
-                parserEvent = parser.nextTag();
+                parserEvent = parser.next();
             }
         } catch(Exception e){
             Log.e("파싱 에러","파싱 에러.");
@@ -142,6 +140,8 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(MainActivity.this, ShowListActivity.class);
                 //intent.putExtra("Date",arr.get(position));
                 startActivity(intent);
+                overridePendingTransition(R.anim.anim_slide_in_right, R.anim.anim_slide_out_left);
+                finish();
             }
         });
 
@@ -163,5 +163,12 @@ public class MainActivity extends AppCompatActivity {
     }
     public void fetchTimelineAsync(int page) {
         swipeContainer.setRefreshing(false);
+    }
+    public boolean CheckLocal(String str){
+        String arr[] = str.split(" ");
+        if(arr[0].equals("서울특별시")){
+            return true;
+        }
+        return false;
     }
 }

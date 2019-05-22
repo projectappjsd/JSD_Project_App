@@ -64,9 +64,7 @@ public class TestActivity extends AppCompatActivity {
                         }else if(parser.getName().equals("shltrNm")){
                             inAddr = true;
                         }
-
                         break;
-
                     case XmlPullParser.TEXT://parser가 내용에 접근했을때
                         if(inAddr){ //isTitle이 true일 때 태그의 내용을 저장.
                             addr = parser.getText();
