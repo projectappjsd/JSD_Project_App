@@ -49,15 +49,15 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.INTERNET) == PackageManager.PERMISSION_GRANTED){
-        } else{
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.INTERNET) == PackageManager.PERMISSION_GRANTED) {
+        } else {
             //사용자에게 접근권한 설정을 요구하는 다이얼로그를 띄운다.
-            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.INTERNET},0);
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.INTERNET}, 0);
         }
         StrictMode.enableDefaults();
 
-        boolean inShltrNm = false, inLegaldongNm = false, inLatitude = false, inHardness = false,inRdnmadr = false, initem = false;
-        String shltrNm = null, legaldongNm = null, latitude = null ,hardness = null, rdnmadr = null;
+        boolean inShltrNm = false, inLegaldongNm = false, inLatitude = false, inHardness = false, inRdnmadr = false, initem = false;
+        String shltrNm = null, legaldongNm = null, latitude = null, hardness = null, rdnmadr = null;
 
         mRecyclerView = (RecyclerView) findViewById(R.id.main_list_recycler);
         mRecyclerView.setHasFixedSize(true);
@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
         mRecyclerView.setLayoutManager(mLayoutManager);
         myDataList = new ArrayList<>();
 
-        try{
+        try {
             URL url = new URL("http://api.data.go.kr/openapi/heat-wve-shltr-std?&pageNo=1&numOfRows=10&ServiceKey=" + key); //검색 URL부분
 
             XmlPullParserFactory parserCreator = XmlPullParserFactory.newInstance();
@@ -74,50 +74,50 @@ public class MainActivity extends AppCompatActivity {
             parser.setInput(url.openStream(), null);
 
             int parserEvent = parser.getEventType();
-            while (parserEvent != XmlPullParser.END_DOCUMENT){
-                switch(parserEvent){
+            while (parserEvent != XmlPullParser.END_DOCUMENT) {
+                switch (parserEvent) {
                     case XmlPullParser.START_TAG://parser가 시작 태그를 만나면 실행
-                        if(parser.getName().equals("shltrNm")){ //title 만나면 내용을 받을수 있게 하자
+                        if (parser.getName().equals("shltrNm")) { //title 만나면 내용을 받을수 있게 하자
                             inShltrNm = true;
                         }
-                        if(parser.getName().equals("legaldongNm")){
+                        if (parser.getName().equals("legaldongNm")) {
                             inLegaldongNm = true;
                         }
-                        if(parser.getName().equals("latitude")){
+                        if (parser.getName().equals("latitude")) {
                             inLatitude = true;
                         }
-                        if(parser.getName().equals("hardness")){
+                        if (parser.getName().equals("hardness")) {
                             inHardness = true;
                         }
-                        if(parser.getName().equals("rdnmadr")){
+                        if (parser.getName().equals("rdnmadr")) {
                             inRdnmadr = true;
                         }
                         break;
                     case XmlPullParser.TEXT://parser가 내용에 접근했을때
-                        if(inShltrNm){ //isTitle이 true일 때 태그의 내용을 저장.
+                        if (inShltrNm) { //isTitle이 true일 때 태그의 내용을 저장.
                             shltrNm = parser.getText();
                             inShltrNm = false;
                         }
-                        if(inLegaldongNm){
+                        if (inLegaldongNm) {
                             legaldongNm = parser.getText();
                             inLegaldongNm = false;
                         }
-                        if(inLatitude){
+                        if (inLatitude) {
                             latitude = parser.getText();
                             inLatitude = false;
                         }
-                        if(inHardness){
+                        if (inHardness) {
                             hardness = parser.getText();
                             inHardness = false;
                         }
-                        if(inRdnmadr){
+                        if (inRdnmadr) {
                             rdnmadr = parser.getText();
                             inRdnmadr = false;
                         }
                         break;
                     case XmlPullParser.END_TAG:
-                        if(parser.getName().equals("item")){
-                             if(CheckLocal(legaldongNm)) {
+                        if (parser.getName().equals("item")) {
+                            if (CheckLocal(legaldongNm)) {
                                 myDataList.add(new XmlDTO(shltrNm, rdnmadr, latitude, hardness));
                             }
                             initem = false;
@@ -126,9 +126,9 @@ public class MainActivity extends AppCompatActivity {
                 }
                 parserEvent = parser.next();
             }
-        } catch(Exception e){
-            Log.e("파싱 에러","파싱 에러.");
-            Log.e("error",String.valueOf(e));
+        } catch (Exception e) {
+            Log.e("파싱 에러", "파싱 에러.");
+            Log.e("error", String.valueOf(e));
         }
 
         mAdapter = new MainAdapter(myDataList, new MainAdapter.ClickCallback() {
@@ -144,7 +144,7 @@ public class MainActivity extends AppCompatActivity {
 
         mRecyclerView.setAdapter(mAdapter);
 
-        swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
+     /*   swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
         // Setup refresh listener which triggers new data loading
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -160,10 +160,11 @@ public class MainActivity extends AppCompatActivity {
     }
     public void fetchTimelineAsync(int page) {
         swipeContainer.setRefreshing(false);
+    }*/
     }
-    public boolean CheckLocal(String str){
+    public boolean CheckLocal (String str){
         String arr[] = str.split(" ");
-        if(arr[0].equals("서울특별시")){
+        if (arr[0].equals("서울특별시")) {
             return true;
         }
         return false;
