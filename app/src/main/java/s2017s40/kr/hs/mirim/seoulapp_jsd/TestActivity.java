@@ -45,7 +45,7 @@ public class TestActivity extends AppCompatActivity {
 
         try{
             URL url = new URL("http://api.data.go.kr/openapi/heat-wve-shltr-std?"
-                    + "&pageNo=1&numOfRows=10&ServiceKey="
+                    + "&ServiceKey="
                     + key
             ); //검색 URL부분
 

@@ -1,6 +1,7 @@
 package s2017s40.kr.hs.mirim.seoulapp_jsd;
 
 public class XmlDTO {
+
     String shltrNm;//쉼터명
     String legaldongNm;//법정동명
     String shltrType;//쉼터유형
@@ -13,13 +14,22 @@ public class XmlDTO {
     String phoneNumber;//관리기관전화번호
     String latitude;//위도
     String hardness;//경도
+    String coords;//위도 경도
     XmlDTO(){}
-    XmlDTO(String shltrNm, String rdnmadr, String latitude, String hardness){//Main RecyclerView를 위한 생성자
+    XmlDTO(String shltrNm, String rdnmadr, String coords){//Main RecyclerView를 위한 생성자
         this.shltrNm = shltrNm;
         this.rdnmadr = rdnmadr;
-        this.latitude = latitude;
-        this.hardness = hardness;
+        this.coords = coords;
     }
+
+    public void setCoords(String coords) {
+        this.coords = coords;
+    }
+
+    public String getCoords() {
+        return coords;
+    }
+
     public void setArcndtnHoldCo(int arcndtnHoldCo) {
         this.arcndtnHoldCo = arcndtnHoldCo;
     }
