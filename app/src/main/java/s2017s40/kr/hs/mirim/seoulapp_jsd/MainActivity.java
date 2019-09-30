@@ -97,7 +97,6 @@ public class MainActivity extends AppCompatActivity {
 
             parser.setInput(url.openStream(), null);
 
-
             int parserEvent = parser.getEventType();
             while (parserEvent != XmlPullParser.END_DOCUMENT){
                 switch(parserEvent){
