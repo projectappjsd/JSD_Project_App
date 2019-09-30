@@ -43,4 +43,5 @@
                 android:layout_alignParentTop="true" />
         </android.support.v4.widget.SwipeRefreshLayout>
     </LinearLayout>
+
 </LinearLayout>

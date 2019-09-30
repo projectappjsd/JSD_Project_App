@@ -1,17 +1,20 @@
 package s2017s40.kr.hs.mirim.seoulapp_jsd;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.support.design.widget.BottomSheetDialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class PlusFragment extends Fragment implements View.OnClickListener{
+public class PlusFragment extends BottomSheetDialogFragment implements View.OnClickListener{
     View view;
     ImageView Air, Fan, Toilet, Night, Weeken;
     TextView Cancel, Ok;
+
+    public static PlusFragment getInstance() { return new PlusFragment(); }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_plus, container, false);
@@ -20,7 +23,6 @@ public class PlusFragment extends Fragment implements View.OnClickListener{
         Toilet = view.findViewById(R.id.plus_Toilet_image);
         Night = view.findViewById(R.id.plus_Night_image);
         Weeken = view.findViewById(R.id.plus_Weeken_image);
-
 
         return view;
     }

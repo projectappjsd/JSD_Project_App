@@ -2,29 +2,22 @@ package s2017s40.kr.hs.mirim.seoulapp_jsd;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.widget.EditText;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
 
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.StringReader;
 import java.net.URL;
-import java.net.URLEncoder;
 
 public class TestActivity extends AppCompatActivity {
 
-    String key="hxHjiOLsl7JaN0OUdYG3%2Fbvt4KQfpvDkFCUo8OAFfzsRAMwHxYs8koZT8FIQxW56b9o5o%2BAGgld95CaXlaT3ng%3D%3D";
+    String key="2Wtg732VOXaynAnVHFZ9iSO1GeFrBxzQvCLXNXWCBnDJ7O3%2BLOGBMbiUMv5RhimVH2r3Uq6K%2FF24rJeTNETjrQ%3D%3D";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
