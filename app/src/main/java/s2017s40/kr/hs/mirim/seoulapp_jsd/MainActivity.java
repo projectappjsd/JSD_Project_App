@@ -59,10 +59,15 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        //파싱에 사용할 변수 정의
-        boolean inShltrNm = false, inLegaldongNm = false, inLatitude = false, inHardness = false,inRdnmadr = false, initem = false;
-        double indistance = 0.0;
-        String shltrNm = null, legaldongNm = null, latitude = null ,hardness = null, rdnmadr = null;
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.INTERNET) == PackageManager.PERMISSION_GRANTED) {
+        } else {
+            //사용자에게 접근권한 설정을 요구하는 다이얼로그를 띄운다.
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.INTERNET}, 0);
+        }
+        StrictMode.enableDefaults();
+
+        boolean inShltrNm = false, inLegaldongNm = false, inLatitude = false, inHardness = false, inRdnmadr = false, initem = false;
+        String shltrNm = null, legaldongNm = null, latitude = null, hardness = null, rdnmadr = null;
 
         mRecyclerView = (RecyclerView) findViewById(R.id.main_list_recycler);
         mRecyclerView.setHasFixedSize(true);
@@ -70,6 +75,8 @@ public class MainActivity extends AppCompatActivity {
         mRecyclerView.setLayoutManager(mLayoutManager);
         myDataList = new ArrayList<>();
 
+        try {
+            URL url = new URL("http://api.data.go.kr/openapi/heat-wve-shltr-std?&pageNo=1&numOfRows=10&ServiceKey=" + key); //검색 URL부분
         //GPS 위치 정보
        /* Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);//가장 최근의 위치 정보 가지고 옴
         String provider = location.getProvider();//GPS
@@ -88,9 +95,6 @@ public class MainActivity extends AppCompatActivity {
         double g_longitude =  127.025716;//경도
         double g_latitude = 37.638043;//위도
 
-        //오픈 API 파싱
-        try{
-            URL url = new URL("http://api.data.go.kr/openapi/heat-wve-shltr-std?" + "&ServiceKey=" + key);
 
             XmlPullParserFactory parserCreator = XmlPullParserFactory.newInstance();
             XmlPullParser parser = parserCreator.newPullParser();
@@ -98,6 +102,7 @@ public class MainActivity extends AppCompatActivity {
             parser.setInput(url.openStream(), null);
 
             int parserEvent = parser.getEventType();
+
             while (parserEvent != XmlPullParser.END_DOCUMENT){
                 switch(parserEvent){
                     case XmlPullParser.START_TAG:
@@ -118,11 +123,11 @@ public class MainActivity extends AppCompatActivity {
                         }
                         break;
                     case XmlPullParser.TEXT://parser가 내용에 접근했을때
-                        if(inShltrNm){ //isTitle이 true일 때 태그의 내용을 저장.
+                        if (inShltrNm) { //isTitle이 true일 때 태그의 내용을 저장.
                             shltrNm = parser.getText();
                             inShltrNm = false;
                         }
-                        if(inLegaldongNm){
+                        if (inLegaldongNm) {
                             legaldongNm = parser.getText();
                             CheckLocal(legaldongNm);
                             inLegaldongNm = false;
@@ -135,9 +140,15 @@ public class MainActivity extends AppCompatActivity {
                         if(inLatitude){
                             latitude = parser.getText();
                         }
-                        if(inHardness){
+                        if (inHardness) {
                             hardness = parser.getText();
                         }
+                        break;
+                    case XmlPullParser.END_TAG:
+                        if (parser.getName().equals("item")) {
+                            if (CheckLocal(legaldongNm)) {
+                                myDataList.add(new XmlDTO(shltrNm, rdnmadr, latitude, hardness));
+                            }
                         if(inLatitude && inHardness){
                             indistance = computeDistance(new Coords(g_latitude,g_longitude), new Coords(Double.parseDouble(latitude), Double.parseDouble(hardness)));
                             inLatitude = false;
@@ -153,9 +164,9 @@ public class MainActivity extends AppCompatActivity {
                 }
                 parserEvent = parser.next();
             }
-        } catch(Exception e){
-            Log.e("파싱 에러","파싱 에러.");
-            Log.e("error",String.valueOf(e));
+        } catch (Exception e) {
+            Log.e("파싱 에러", "파싱 에러.");
+            Log.e("error", String.valueOf(e));
         }
 
         //어뎁터 설정 및 방향 설정
@@ -171,6 +182,8 @@ public class MainActivity extends AppCompatActivity {
 
         mRecyclerView.setAdapter(mAdapter);
 
+     /*   swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
+        // Setup refresh listener which triggers new data loading
         swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -187,8 +200,8 @@ public class MainActivity extends AppCompatActivity {
     //swipe 함수
     public void fetchTimelineAsync(int page) {
         swipeContainer.setRefreshing(false);
-    }
-
+    }*/
+            }
     //지역 구분 함수
     public String CheckLocal(String str){
         String arr[] = str.split(" ");
